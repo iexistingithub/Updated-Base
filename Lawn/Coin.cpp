@@ -514,14 +514,33 @@ void Coin::UpdateFall()
             mPosX = BOARD_WIDTH - mWidth;
             mVelX = -0.4f - RandRangeFloat(0.0f, 0.4f);
         }
+
         else if (mPosX < 0.0f)
         {
             mPosX = 0.0f;
             mVelX = 0.4f + RandRangeFloat(0.0f, 0.4f);
         }
+        mPosX += mVelX;
+
+        if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_HIGH_GRAVITY)
+        {
+            mVelY += 0.2f;
+            mPosY += 0.2f;
+        }
+
+        if (mBoard->mLevel == 6)
+        {
+            mPosX -= 3.33f * 0.5f;
+        }
     }
     else
     {
+
+        if (mBoard->mLevel == 6 && (IsMoney() || mType == COIN_SUN || mType == COIN_SMALLSUN || mType == COIN_LARGESUN))
+        {
+            mPosX -= 3.33f * 0.25f;
+        }
+
         if (mNeedsBouncyArrow && !mHasBouncyArrow)
         {
             float aParticleOffsetX = mWidth / 2;
@@ -604,6 +623,7 @@ void Coin::UpdateFall()
         {
             mScale = aFinalScale;
         }
+
     }
 }
 

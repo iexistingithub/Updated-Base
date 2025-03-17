@@ -117,7 +117,7 @@ LawnApp::LawnApp()
 	mProdName = "PlantsVsZombies";
 	std::string aTitleName = "Plants vs. Zombies";
 #ifdef _DEBUG
-	aTitleName += " BETA ";
+	aTitleName += " Hard Rain + ";
 	aTitleName += mProductVersion;
 #endif
 

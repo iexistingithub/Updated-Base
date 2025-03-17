@@ -133,6 +133,7 @@ public:
     /*inline*/ void         PlayBossEnter();
     void                    UpdateConveyorBelt();
     void                    PortalStart();
+    void                    UpdateEclipse();
     void                    UpdatePortalCombat();
     GridItem*               GetOtherPortal(GridItem* thePortal);
     void                    UpdatePortal(GridItem* thePortal);

@@ -12,24 +12,24 @@
 #include "../Sexy.TodLib/Attachment.h"
 
 ProjectileDefinition gProjectileDefinition[] = {  //0x69F1C0
-	{ ProjectileType::PROJECTILE_PEA,           0,  20  },
-	{ ProjectileType::PROJECTILE_SNOWPEA,       0,  20  },
+	{ ProjectileType::PROJECTILE_PEA,           0,  25  },
+	{ ProjectileType::PROJECTILE_SNOWPEA,       0,  25  },
 	{ ProjectileType::PROJECTILE_CABBAGE,       0,  40  },
 	{ ProjectileType::PROJECTILE_MELON,         0,  80  },
-	{ ProjectileType::PROJECTILE_PUFF,          0,  20  },
+	{ ProjectileType::PROJECTILE_PUFF,          0,  25  },
 	{ ProjectileType::PROJECTILE_WINTERMELON,   0,  80  },
 	{ ProjectileType::PROJECTILE_FIREBALL,      0,  40  },
-	{ ProjectileType::PROJECTILE_STAR,          0,  20  },
-	{ ProjectileType::PROJECTILE_SPIKE,         0,  20  },
+	{ ProjectileType::PROJECTILE_STAR,          0,  25  },
+	{ ProjectileType::PROJECTILE_SPIKE,         0,  30  },
 	{ ProjectileType::PROJECTILE_BASKETBALL,    0,  75  },
-	{ ProjectileType::PROJECTILE_KERNEL,        0,  20  },
+	{ ProjectileType::PROJECTILE_KERNEL,        0,  25  },
 	{ ProjectileType::PROJECTILE_COBBIG,        0,  300 },
 	{ ProjectileType::PROJECTILE_BUTTER,        0,  40  },
-	{ ProjectileType::PROJECTILE_ZOMBIE_PEA,    0,  20  },
-	{ ProjectileType::PROJECTILE_LOBBED_PUFF,   0,  20  },
-	{ ProjectileType::PROJECTILE_LOBELIA_PETAL, 0,  20  },
-	{ ProjectileType::PROJECTILE_TOXIC_PEA,     0,  20  },
-	{ ProjectileType::PROJECTILE_SOUNDWAVE,     0,  10  },
+	{ ProjectileType::PROJECTILE_ZOMBIE_PEA,    0,  25  },
+	{ ProjectileType::PROJECTILE_LOBBED_PUFF,   0,  10  },
+	{ ProjectileType::PROJECTILE_LOBELIA_PETAL, 0,  25  },
+	{ ProjectileType::PROJECTILE_TOXIC_PEA,     0,  25  },
+	{ ProjectileType::PROJECTILE_SOUNDWAVE,     0,  15  },
 	{ ProjectileType::PROJECTILE_REDWAVE,       0,  20  }
 };
 
@@ -105,11 +105,6 @@ void Projectile::ProjectileInitialize(int theX, int theY, int theRenderOrder, in
 		TodParticleSystem* aParticle = mApp->AddTodParticle(mPosX + 8.0f, mPosY + 13.0f, 400000, ParticleEffect::PARTICLE_SNOWPEA_TRAIL);
 		AttachParticle(mAttachmentID, aParticle, 8.0f, 13.0f);
 	}
-	else if (mProjectileType == ProjectileType::PROJECTILE_TOXIC_PEA)
-	{
-		TodParticleSystem* aParticle = mApp->AddTodParticle(mPosX + 8.0f, mPosY + 13.0f, 400000, ParticleEffect::PARTICLE_SNOWPEA_TRAIL);
-		AttachParticle(mAttachmentID, aParticle, 8.0f, 13.0f);
-	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_FIREBALL)
 	{
 		TOD_ASSERT();
@@ -125,11 +120,7 @@ void Projectile::ProjectileInitialize(int theX, int theY, int theRenderOrder, in
 		TodParticleSystem* aParticle = mApp->AddTodParticle(mPosX + 13.0f, mPosY + 13.0f, 400000, ParticleEffect::PARTICLE_PUFFSHROOM_TRAIL);
 		AttachParticle(mAttachmentID, aParticle, 13.0f, 13.0f);
 	}
-	else if (mProjectileType == ProjectileType::PROJECTILE_SOUNDWAVE)
-	{
-		TodParticleSystem* aParticle = mApp->AddTodParticle(mPosX + 13.0f, mPosY + 13.0f, 400000, ParticleEffect::PARTICLE_PUFFSHROOM_TRAIL);
-		AttachParticle(mAttachmentID, aParticle, 13.0f, 13.0f);
-	}
+
 	else if (mProjectileType == ProjectileType::PROJECTILE_REDWAVE)
 	{
 		TodParticleSystem* aParticle = mApp->AddTodParticle(mPosX + 13.0f, mPosY + 13.0f, 400000, ParticleEffect::PARTICLE_SNOWPEA_TRAIL);
@@ -177,6 +168,7 @@ Plant* Projectile::FindCollisionTargetPlant()
 				aPlant->mSeedType == SeedType::SEED_PULTSHROOM  ||
 				aPlant->mSeedType == SeedType::SEED_SUNSHROOM ||
 				aPlant->mSeedType == SeedType::SEED_POTATOMINE ||
+				aPlant->mSeedType == SeedType::SEED_POISONPOTATO ||
 				aPlant->mSeedType == SeedType::SEED_SPIKEWEED ||
 				aPlant->mSeedType == SeedType::SEED_SPIKEROCK ||
 				aPlant->mSeedType == SeedType::SEED_LILYPAD)  // 僵尸豌豆不能击中低矮植物
@@ -421,7 +413,7 @@ unsigned int Projectile::GetDamageFlags(Zombie* theZombie)
 {
 	unsigned int aDamageFlags = 0U;
 
-	if (IsSplashDamage(theZombie))
+	if (IsSplashDamage(theZombie) || mProjectileType == ProjectileType::PROJECTILE_TOXIC_PEA)
 	{
 		SetBit(aDamageFlags, (int)DamageFlags::DAMAGE_HITS_SHIELD_AND_BODY, true);
 	}
@@ -536,6 +528,7 @@ void Projectile::UpdateLobMotion()
 		mPosY = mBoard->GridToPixelY(aCobTargetCol, mCobTargetRow);
 		mShadowY = mPosY + 67.0f;
 		mRotation = -PI / 2;
+		mVelX = 0.f;
 	}
 
 	mVelZ += mAccZ;
@@ -544,6 +537,10 @@ void Projectile::UpdateLobMotion()
 		mVelZ += mAccZ;
 	}
 	mPosX += mVelX;
+	if (mBoard->mLevel == 6)
+	{
+		mPosX -= abs(mVelX) * 0.5f;
+	}
 	mPosY += mVelY;
 	mPosZ += mVelZ;
 
@@ -750,6 +747,16 @@ void Projectile::UpdateNormalMotion()
 		mPosY += mVelZ;
 	}
 
+	if (mBoard->mLevel == 6)
+	{
+		int vel = mVelX;
+
+		if (mMotionType != MOTION_HOMING)
+			vel = 3.33f;
+
+		mPosX -= vel * 0.5f;
+	}
+
 	CheckForCollision();
 	CheckForHighGround();
 }
@@ -785,14 +792,17 @@ void Projectile::UpdateMotion()
 	{
 		mPosY += aSlopeHeightChange;
 	}
-	if (mMotionType == ProjectileMotion::MOTION_LOBBED)
+	if (mMotionType == ProjectileMotion::MOTION_LOBBED && mProjectileType != ProjectileType::PROJECTILE_COBBIG)
 	{
 		mPosY += aSlopeHeightChange;
 		mPosZ -= aSlopeHeightChange;
 	}
+	if(mProjectileType != ProjectileType::PROJECTILE_COBBIG)
+	{
 	mShadowY += aSlopeHeightChange;
 	mX = (int)mPosX;
 	mY = (int)(mPosY + mPosZ);
+	}
 }
 
 //0x46DD30
@@ -825,7 +835,7 @@ void Projectile::PlayImpactSound(Zombie* theZombie)
 
 	if (aPlayHelmSound && theZombie)
 	{
-		if (theZombie->mHelmType == HELMTYPE_PAIL)
+		if (theZombie->mHelmType == HELMTYPE_PAIL || theZombie->mHelmType == HELMTYPE_FIREHELMET)
 		{
 			mApp->PlayFoley(FoleyType::FOLEY_SHIELD_HIT);
 			aPlaySplatSound = false;
@@ -890,6 +900,8 @@ void Projectile::DoImpact(Zombie* theZombie)
 	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_TOXIC_PEA)
 	{
+		aSplatPosX -= 15.0f;
+		aEffect = ParticleEffect::PARTICLE_PEA_SPLAT;
 		theZombie->ApplyPoison();
 		//mBoard->mIceTrapCounter = 300;
 	}
@@ -917,11 +929,7 @@ void Projectile::DoImpact(Zombie* theZombie)
 		aSplatPosX -= 20.0f;
 		aEffect = ParticleEffect::PARTICLE_PUFF_SPLAT;
 	}
-	else if (mProjectileType == ProjectileType::PROJECTILE_SOUNDWAVE)
-	{
-		aSplatPosX -= 20.0f;
-		aEffect = ParticleEffect::PARTICLE_PUFF_SPLAT;
-	}
+
 	else if (mProjectileType == ProjectileType::PROJECTILE_REDWAVE)
 	{
 		aSplatPosX -= 20.0f;
@@ -943,11 +951,6 @@ void Projectile::DoImpact(Zombie* theZombie)
 		aSplatPosX = aLastPosX - 20.0f;
 		aSplatPosY = aLastPosY + 63.0f;
 		aEffect = ParticleEffect::PARTICLE_BUTTER_SPLAT;
-	}
-	else if (mProjectileType == ProjectileType::PROJECTILE_TOXIC_PEA)
-	{
-		aSplatPosX -= 15.0f;
-		aEffect = ParticleEffect::PARTICLE_PEA_SPLAT;
 	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_BUTTER)
 	{
@@ -992,9 +995,9 @@ void Projectile::DoImpact(Zombie* theZombie)
 	{
 		if (theZombie)
 		{
-			theZombie->mKnockBackCounter = 1.0f;
+			theZombie->mKnockBackCounter = 1.3f;
 			theZombie->mKnockBackDirection = 2;
-			theZombie->mKnockBackForce = 1.0f;
+			theZombie->mKnockBackForce = 1.3f;
 		}
 	}
 	
@@ -1055,7 +1058,7 @@ void Projectile::Draw(Graphics* g)
 		aImage = IMAGE_REANIM_COBCANNON_COB;
 		aScale = 0.9f;
 	}
-	else if (mProjectileType == ProjectileType::PROJECTILE_PEA || mProjectileType == ProjectileType::PROJECTILE_ZOMBIE_PEA || mProjectileType == ProjectileType::PROJECTILE_TOXIC_PEA)
+	else if (mProjectileType == ProjectileType::PROJECTILE_PEA || mProjectileType == ProjectileType::PROJECTILE_ZOMBIE_PEA)
 	{
 		aImage = IMAGE_PROJECTILEPEA;
 	}
@@ -1117,18 +1120,22 @@ void Projectile::Draw(Graphics* g)
 	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_LOBELIA_PETAL)
 	{
-		aImage = IMAGE_REANIM_CORNPULT_KERNAL;
+		aImage = IMAGE_PROJECTILE_TOXIC;
 		aScale = 0.95f;
 	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_SOUNDWAVE)
 	{
-		aImage = IMAGE_PUFFSHROOM_PUFF1;
+		aImage = IMAGE_PROJECTILE_SOUNDWAVE;
 		aScale = TodAnimateCurveFloat(0, 30, mProjectileAge, 0.3f, 1.0f, TodCurves::CURVE_LINEAR);
 	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_REDWAVE)
 	{
 		aImage = IMAGE_REANIM_CORNPULT_KERNAL;
 		aScale = TodAnimateCurveFloat(0, 30, mProjectileAge, 0.3f, 1.0f, TodCurves::CURVE_LINEAR);
+	}
+	else if (mProjectileType == ProjectileType::PROJECTILE_TOXIC_PEA)
+	{
+		aImage = IMAGE_PROJECTILE_LOBELIA;
 	}
 	else
 	{

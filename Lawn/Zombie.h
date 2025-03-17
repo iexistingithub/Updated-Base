@@ -198,6 +198,10 @@ public:
     void                            UpdateZombiePolevaulter();
     void                            UpdateZombieDolphinRider();
     void                            UpdateZombieFootballer();
+    void                            UpdateZombieImposter();
+    void                            SummonImps();
+    void                            SummonImps2();
+
     void                            PickBungeeZombieTarget(int theColumn);
     int                             CountBungeesTargetingSunFlowers();
     Plant*                          FindPlantTarget(ZombieAttackType theAttackType);
@@ -241,6 +245,8 @@ public:
     void                            UpdateZombieDancer();
     ZombieID                        SummonBackupDancer(int theRow, int thePosX);
     void                            SummonBackupDancers();
+    ZombieID                            SummonImp(int theRow, int thePosX);
+    ZombieID                            SummonImp2(int theRow, int thePosX);
     int                             GetDancerFrame();
     void                            BungeeStealTarget();
     void                            BungeeLiftTarget();
@@ -366,6 +372,7 @@ public:
     void                            UpdateActions();
     void                            CheckForBoardEdge();
     void                            UpdateYeti();
+    void                            UpdateZombieUmbrellaLeadHead();
     void                            DrawBossPart(Graphics* g, BossPart theBossPart);
     void                            BossSetupReanim();
     void                            MowDown();

@@ -62,7 +62,7 @@ ZombieAllowedLevels gZombieAllowedLevels[NUM_ZOMBIE_TYPES] = {  //0x6A35B0
 	},
 	{ ZOMBIE_TRAFFIC_CONE,
 		{
-			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -309,16 +309,7 @@ ZombieAllowedLevels gZombieAllowedLevels[NUM_ZOMBIE_TYPES] = {  //0x6A35B0
 				0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
 	    }
 	},
-	{ ZOMBIE_MOUSTACHE,
-		{
-			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		}
-	},
+
 	{ ZOMBIE_FIREFIGHTER,
 		{
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -329,7 +320,30 @@ ZombieAllowedLevels gZombieAllowedLevels[NUM_ZOMBIE_TYPES] = {  //0x6A35B0
 			0, 0, 0, 1, 1, 1, 1, 1, 1, 1,
 		}
 	},
+	{ ZOMBIE_UMBRELLA,
+		{
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 1, 1, 1, 1, 1, 1, 1,
+		}
+	},
+	{ ZOMBIE_MOUSTACHE,
+		{
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		}
+	},
 	{ ZOMBIE_FOOTBALL_GARG, {0} },
+	{ ZOMBIE_BIGIMP, {0} },
+	{ ZOMBIE_IMPOSTOR, {0} },
+	{ ZOMBIE_NINJAIMP, {0} },
 	{ ZOMBIE_GARLIC_HEAD, {0} },
 	{ ZOMBIE_REPEATER_HEAD, {0} },
 };
@@ -542,7 +556,7 @@ void Challenge::StartLevel()
 	{
 		ScaryPotterStart();
 	}
-	if (mApp->IsLittleTroubleLevel() || mApp->IsStormyNightLevel() || mApp->IsBungeeBlitzLevel() || aGameMode == GAMEMODE_CHALLENGE_INVISIGHOUL || aGameMode == GAMEMODE_CHALLENGE_ATHLETES)
+	if (mApp->IsLittleTroubleLevel() || mApp->IsStormyNightLevel() || mApp->IsBungeeBlitzLevel() || aGameMode == GAMEMODE_CHALLENGE_INVISIGHOUL || aGameMode == GAMEMODE_CHALLENGE_ATHLETES || aGameMode == GAMEMODE_CHALLENGE_WORKERS)
 	{
 		mBoard->mZombieCountDown = 200;
 		mBoard->mZombieCountDownStart = mBoard->mZombieCountDown;
@@ -602,6 +616,10 @@ void Challenge::StartLevel()
 	if (aGameMode == GAMEMODE_CHALLENGE_PORTAL_COMBAT)
 	{
 		PortalStart();
+	}
+	if (aGameMode == GAMEMODE_CHALLENGE_MOUNTAIN || mBoard->mLevel == 46)
+	{
+		mChallengeStateCounter = RandRangeInt(3000, 9000);
 	}
 	if (aGameMode == GAMEMODE_CHALLENGE_COLUMN)
 	{
@@ -1954,12 +1972,27 @@ void Challenge::UpdateConveyorBelt()
 		aSeedPickArray[1].mItem = SEED_WALLNUT;
 		aSeedPickArray[1].mWeight = 15;
 		aSeedPickArray[2].mItem = SEED_CHERRYBOMB;
-		aSeedPickArray[2].mWeight = 15;
+		aSeedPickArray[2].mWeight = 30;
 		aSeedPickArray[3].mItem = SEED_LILYPAD;
-		aSeedPickArray[3].mWeight = 25;
-		aSeedPickArray[3].mItem = SEED_BELL_FLOWER;
-		aSeedPickArray[3].mWeight = 25;
+		aSeedPickArray[3].mWeight = 30;
+		aSeedPickArray[4].mItem = SEED_BELL_FLOWER;
+		aSeedPickArray[4].mWeight = 25;
 	}
+	else if (mApp->mGameMode == GAMEMODE_CHALLENGE_WORKERS)
+	{
+		aSeedPickCount = 5;
+		aSeedPickArray[0].mItem = SEED_REPEATER;
+		aSeedPickArray[0].mWeight = 20;
+		aSeedPickArray[1].mItem = SEED_WALLNUT;
+		aSeedPickArray[1].mWeight = 15;
+		aSeedPickArray[2].mItem = SEED_CHERRYBOMB;
+		aSeedPickArray[2].mWeight = 30;
+
+		aSeedPickArray[3].mItem = SEED_LOBELIA;
+		aSeedPickArray[3].mWeight = 25;
+		aSeedPickArray[4].mItem = SEED_SPLITPEA;
+		aSeedPickArray[4].mWeight = 20;
+		}
 	else TOD_ASSERT();
 
 	for (int i = 0; i < aSeedPickCount; i++)
@@ -2273,10 +2306,15 @@ void Challenge::Update()
 	{
 		UpdateBeghouled();
 	}
+	if (mApp->mGameMode == GAMEMODE_CHALLENGE_MOUNTAIN)
+	{
+		UpdateEclipse();
+	}
 	if (mApp->IsScaryPotterLevel())
 	{
 		ScaryPotterUpdate();
 	}
+
 	if ((mApp->IsScaryPotterLevel() || mApp->IsWhackAZombieLevel()) && mBoard->mSeedBank->mY < 0)
 	{
 		if (mBoard->mSunMoney + mBoard->CountSunBeingCollected() > 0 || mBoard->mSeedBank->mY > Sexy::IMAGE_SEEDBANK->mWidth)
@@ -2590,25 +2628,9 @@ PlantingReason Challenge::CanPlantAt(int theGridX, int theGridY, SeedType theSee
 	else if (mApp->IsArtChallenge())
 	{
 		SeedType anArtSeed = GetArtChallengeSeed(theGridX, theGridY);
-		if (anArtSeed != SEED_NONE && anArtSeed != theSeedType && theSeedType != SEED_LILYPAD && theSeedType != SEED_PUMPKINSHELL)
+		if (anArtSeed != SEED_NONE && anArtSeed != theSeedType && theSeedType != SEED_LILYPAD && theSeedType != SEED_PUMPKINSHELL && theSeedType != SEED_PUMPKINSHELL && theSeedType != SEED_PUMPKINSHELL && theSeedType != SEED_EXPLODE_O_VINE)
 		{
 			return PLANTING_NOT_ON_ART;
-		}
-		if (mApp->mGameMode == GAMEMODE_CHALLENGE_ART_CHALLENGE_WALLNUT)
-		{
-			if ((theGridX == 4 || theGridX == 6) && theGridY == 1)
-			{
-				return PLANTING_NOT_HERE;
-			}
-		}
-		if (mApp->mGameMode == GAMEMODE_CHALLENGE_ART_CHALLENGE_SUNFLOWER)
-		{
-			if ((theGridX == 1 || theGridX == 2 || theGridX == 3 || theGridX == 4 ||
-				 theGridX == 5 || theGridX == 6 || theGridX == 7 || theGridX == 8 ||
-				 theGridX == 9) && theGridY == 1)
-			{
-				return PLANTING_ONLY_IN_POOL;
-			}
 		}
 	}
 	else if (mApp->IsFinalBossLevel() && theGridX >= 8)
@@ -2734,6 +2756,7 @@ void Challenge::InitZombieWaves()
 		aList[ZOMBIE_TRASHCAN] = true;
 		aList[ZOMBIE_FOOTBALL] = true;
 		aList[ZOMBIE_JACK_IN_THE_BOX] = true;
+		aList[ZOMBIE_UMBRELLA] = true;
 	}
 	else if (aGameMode == GAMEMODE_CHALLENGE_RAINING_SEEDS)
 	{
@@ -2795,6 +2818,7 @@ void Challenge::InitZombieWaves()
 		aList[ZOMBIE_POLEVAULTER] = true;
 		aList[ZOMBIE_DOLPHIN_RIDER] = true;
 		aList[ZOMBIE_LADDER] = true;
+		aList[ZOMBIE_NINJAIMP] = true;
 	}
 	else if (aGameMode == GAMEMODE_CHALLENGE_COLUMN)
 	{
@@ -2803,7 +2827,6 @@ void Challenge::InitZombieWaves()
 		aList[ZOMBIE_PAIL] = true;
 		aList[ZOMBIE_TRASHCAN] = true;
 		aList[ZOMBIE_FOOTBALL] = true;
-		aList[ZOMBIE_GIGA_FOOTBALL] = true;
 	}
 	else if (aGameMode == GAMEMODE_CHALLENGE_INVISIGHOUL)
 	{
@@ -2875,14 +2898,15 @@ void Challenge::InitZombieWaves()
 		aList[ZOMBIE_CATAPULT] = true;
 		aList[ZOMBIE_REDEYE_GARGANTUAR] = true;
 		aList[ZOMBIE_MOUSTACHE] = true;
-		aList[ZOMBIE_GARLIC_HEAD] = true;
+
 		aList[ZOMBIE_REPEATER_HEAD] = true;
 		aList[ZOMBIE_FIREFIGHTER] = true;
+		aList[ZOMBIE_IMPOSTOR] = true;
+		aList[ZOMBIE_NINJAIMP] = true;
 	}
 	else if (aGameMode == GAMEMODE_CHALLENGE_GARG)
 	{
 		aList[ZOMBIE_GARGANTUAR] = true;
-		aList[ZOMBIE_IMP] = true;
 	}
 	else if (aGameMode == GAMEMODE_CHALLENGE_DOCKS)
 	{
@@ -2891,15 +2915,17 @@ void Challenge::InitZombieWaves()
 		aList[ZOMBIE_PAIL] = true;
 		aList[ZOMBIE_DOOR] = true;
 		aList[ZOMBIE_TRASHCAN] = true;
-		aList[ZOMBIE_FOOTBALL] = true;
+
 		aList[ZOMBIE_JACK_IN_THE_BOX] = true;
 		aList[ZOMBIE_GIGA_FOOTBALL] = true;
-		aList[ZOMBIE_SNORKEL] = true;
+
 		aList[ZOMBIE_DOLPHIN_RIDER] = true;
 		aList[ZOMBIE_GARGANTUAR] = true;
 		aList[ZOMBIE_DANCER] = true;
 		aList[ZOMBIE_BACKUP_DANCER] = true;
 		aList[ZOMBIE_IMP] = true;
+		aList[ZOMBIE_FIREFIGHTER] = true;
+		aList[ZOMBIE_IMPOSTOR] = true;
 	}
 	else if (aGameMode == GAMEMODE_CHALLENGE_PURPLE)
 	{
@@ -2909,23 +2935,23 @@ void Challenge::InitZombieWaves()
 		aList[ZOMBIE_DOOR] = true;
 		aList[ZOMBIE_TRASHCAN] = true;
 		aList[ZOMBIE_FOOTBALL] = true;
+		aList[ZOMBIE_FIREFIGHTER] = true;
+		aList[ZOMBIE_IMPOSTOR] = true;
 	}
 	else if (aGameMode == GAMEMODE_CHALLENGE_MOUNTAIN)
 	{
 		aList[ZOMBIE_NORMAL] = true;
 		aList[ZOMBIE_TRAFFIC_CONE] = true;
 		aList[ZOMBIE_PAIL] = true;
-		aList[ZOMBIE_DOOR] = true;
 		aList[ZOMBIE_TRASHCAN] = true;
-		aList[ZOMBIE_FOOTBALL] = true;
 		aList[ZOMBIE_JACK_IN_THE_BOX] = true;
 		aList[ZOMBIE_GIGA_FOOTBALL] = true;
-		aList[ZOMBIE_SNORKEL] = true;
 		aList[ZOMBIE_DOLPHIN_RIDER] = true;
 		aList[ZOMBIE_GARGANTUAR] = true;
 		aList[ZOMBIE_DANCER] = true;
 		aList[ZOMBIE_BACKUP_DANCER] = true;
 		aList[ZOMBIE_IMP] = true;
+		aList[ZOMBIE_IMPOSTOR] = true;
 	}
 	else if (aGameMode == GAMEMODE_CHALLENGE_ATHLETES)
 	{
@@ -2947,27 +2973,50 @@ void Challenge::InitZombieWaves()
 		aList[ZOMBIE_FOOTBALL] = true;
 		aList[ZOMBIE_JACK_IN_THE_BOX] = true;
 		aList[ZOMBIE_GIGA_FOOTBALL] = true;
+		aList[ZOMBIE_FIREFIGHTER] = true;
 	}
 	else if (aGameMode == GAMEMODE_CHALLENGE_PEAR)
 	{
 		aList[ZOMBIE_IMP] = true;
+		aList[ZOMBIE_BIGIMP] = true;
+		aList[ZOMBIE_IMPOSTOR] = true;
+		aList[ZOMBIE_NINJAIMP] = true;
 	}
 	else if (aGameMode == GAMEMODE_CHALLENGE_BOH)
 	{
 		aList[ZOMBIE_NORMAL] = true;
 		aList[ZOMBIE_PAIL] = true;
 		aList[ZOMBIE_TRAFFIC_CONE] = true;
-		aList[ZOMBIE_MOUSTACHE] = true;
 		aList[ZOMBIE_FOOTBALL] = true;
 		aList[ZOMBIE_POLEVAULTER] = true;
 		aList[ZOMBIE_JACK_IN_THE_BOX] = true;
 		aList[ZOMBIE_GARGANTUAR] = true;
 		aList[ZOMBIE_IMP] = true;
+		aList[ZOMBIE_FIREFIGHTER] = true;
+	}
+	else if (aGameMode == GAMEMODE_CHALLENGE_RIVER)
+	{
+		aList[ZOMBIE_NORMAL] = true;
+		aList[ZOMBIE_PAIL] = true;
+		aList[ZOMBIE_TRAFFIC_CONE] = true;
+		aList[ZOMBIE_IMP] = true;
+		aList[ZOMBIE_BIGIMP] = true;
+		aList[ZOMBIE_FIREFIGHTER] = true;
+		aList[ZOMBIE_NINJAIMP] = true;
+	}
+	else if (aGameMode == GAMEMODE_CHALLENGE_WORKERS)
+	{
+		aList[ZOMBIE_ZAMBONI] = true;
+		aList[ZOMBIE_PAIL] = true;
+		aList[ZOMBIE_FIREFIGHTER] = true;
+		aList[ZOMBIE_LADDER] = true;
+		aList[ZOMBIE_DIGGER] = true;
 	}
 	else if (mApp->IsShovelLevel())
 	{
 		aList[ZOMBIE_NORMAL] = true;
 		aList[ZOMBIE_TRAFFIC_CONE] = true;
+		aList[ZOMBIE_NINJAIMP] = true;
 	}
 	else if (mApp->IsWallnutBowlingLevel())
 	{
@@ -5992,3 +6041,50 @@ bool Challenge::TreeOfWisdomCanFeed()
 
 	return true;
 }
+void Challenge::UpdateEclipse()
+{
+	if (mBoard->HasLevelAwardDropped())
+	{
+		mBoard->ClearAdviceImmediately();
+	}
+	else
+	{
+		mChallengeStateCounter--;
+		if (mChallengeStateCounter == 500)
+		{
+			if (mBoard->StageIsNight())
+			{
+				mBoard->DisplayAdviceAgain("The Sun is rising...", MESSAGE_STYLE_HINT_FAST, ADVICE_PORTAL_RELOCATING);
+			}
+			else
+			{
+				mBoard->DisplayAdviceAgain("The Moon is rising...", MESSAGE_STYLE_HINT_FAST, ADVICE_PORTAL_RELOCATING);
+			}
+		}
+		else if (mChallengeStateCounter <= 250 && mChallengeStateCounter > 0) {
+			Plant* aPlant = nullptr;
+			while (mBoard->IteratePlants(aPlant)) {
+
+				aPlant->SetSleeping(mBoard->StageIsNight());
+			}
+		}
+		else if (mChallengeStateCounter <= 0)
+		{
+			mBoard->ClearAdviceImmediately();
+
+
+			if (mBoard->StageIsNight())
+			{
+				mBoard->mBackground = BackgroundType::BACKGROUND_10;
+				mBoard->mSunCountDown = RandRangeInt(425, 700);
+				mChallengeStateCounter = RandRangeInt(3000, 4000);
+			}
+			else
+			{
+				mBoard->mBackground = BackgroundType::BACKGROUND_13;
+				mChallengeStateCounter = RandRangeInt(5000, 6000);
+			}
+		}
+	}
+}
+

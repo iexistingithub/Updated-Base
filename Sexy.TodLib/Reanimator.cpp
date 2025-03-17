@@ -163,10 +163,15 @@ ReanimationParams gLawnReanimationArray[(int)ReanimationType::NUM_REANIMS] = { /
 	{ ReanimationType::REANIM_ZOMBIE_GIGA_FOOTBALL,                 "reanim\\Zombie_GigaFootball.reanim",               0 },
 	{ ReanimationType::REANIM_BELLFLOWER,                           "reanim\\BellFlower.reanim",                        0 },
 	{ ReanimationType::REANIM_EXPLODEOVINE,                         "reanim\\Explodevine.reanim",                       0 },
-	{ ReanimationType::REANIM_TOXICPEA,                              "reanim\\ToxicPea.reanim",                         0 },
-	{ ReanimationType::REANIM_ICYBLOVER,                             "reanim\\Hurrikale.reanim",                            0 },
+	{ ReanimationType::REANIM_TOXICPEA,                             "reanim\\ToxicPea.reanim",                          0 },
+	{ ReanimationType::REANIM_ICYBLOVER,                            "reanim\\Hurrikale.reanim",                         0 },
+	{ ReanimationType::REANIM_LOBELIA,                              "reanim\\Lobelia.reanim",                           0 },
+	{ ReanimationType::REANIM_FIREFIGHTER,                          "reanim\\Zombie_Fire.reanim",                           0 },
+	{ ReanimationType::REANIM_IMPOSTOR,                          "reanim\\Zombie_impostor.reanim",                           0 },
+	{ ReanimationType::REANIM_NINJAIMP,                          "reanim\\Zombie_ninjaimp.reanim",                                  0 },
+	{ ReanimationType::REANIM_POISONOUSPOTATO,                          "reanim\\PoisonPotatoMine.reanim",     0 },
 };
-
+//squidward
 //0x471540
 ReanimatorTransform::ReanimatorTransform() :
 	mTransX(DEFAULT_FIELD_PLACEHOLDER),

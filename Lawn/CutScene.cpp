@@ -742,8 +742,11 @@ void CutScene::StartLevelIntro()
 	{
 		isRestart = true;
 	}
-
-	if (mApp->IsFirstTimeAdventureMode() && aLevel == 11)
+	else if (mApp->IsFirstTimeAdventureMode() && aLevel == 6)
+	{
+		mCrazyDaveDialogStart = 3317;
+	}
+	else if (mApp->IsFirstTimeAdventureMode() && aLevel == 11)
 	{
 		mCrazyDaveDialogStart = 201;
 	}

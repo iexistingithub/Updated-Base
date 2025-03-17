@@ -365,6 +365,7 @@ public:
 	void							PickSpecialGraveStone();
 	float							GetPosYBasedOnRow(float thePosX, int theRow);
 	void							NextWaveComing();
+	Zombie*                         FindUmbrellaZombie(int theGridX, int theGridY);
 	bool							BungeeIsTargetingCell(int theGridX, int theGridY);
 	/*inline*/ int					PlantingPixelToGridX(int theX, int theY, SeedType theSeedType);
 	/*inline*/ int					PlantingPixelToGridY(int theX, int theY, SeedType theSeedType);

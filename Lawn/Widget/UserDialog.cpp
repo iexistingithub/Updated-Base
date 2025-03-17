@@ -124,7 +124,7 @@ void UserDialog::FinishDeleteUser()
     }
 
     mNumUsers--;
-    if (mNumUsers == 7)
+    if (mNumUsers == 8)
     {
         mUserList->AddLine(_S("(Create a New User)"/*[CREATE_NEW_USER]*/), false);
     }

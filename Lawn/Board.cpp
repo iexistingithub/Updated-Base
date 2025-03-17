@@ -602,11 +602,12 @@ void Board::PickZombieWaves()
 		else if (aGameMode == GameMode::GAMEMODE_CHALLENGE_WALLNUT_BOWLING || aGameMode == GameMode::GAMEMODE_CHALLENGE_AIR_RAID ||
 				 aGameMode == GameMode::GAMEMODE_CHALLENGE_GRAVE_DANGER || aGameMode == GameMode::GAMEMODE_CHALLENGE_HIGH_GRAVITY ||
 				 aGameMode == GameMode::GAMEMODE_CHALLENGE_PORTAL_COMBAT || aGameMode == GameMode::GAMEMODE_CHALLENGE_WAR_AND_PEAS ||
-				 aGameMode == GameMode::GAMEMODE_CHALLENGE_INVISIGHOUL || aGameMode == GameMode::GAMEMODE_CHALLENGE_ATHLETES || aGameMode == GameMode::GAMEMODE_CHALLENGE_DEEZNUTS)
+				 aGameMode == GameMode::GAMEMODE_CHALLENGE_INVISIGHOUL || aGameMode == GameMode::GAMEMODE_CHALLENGE_ATHLETES || aGameMode == GameMode::GAMEMODE_CHALLENGE_DEEZNUTS || aGameMode == GameMode::GAMEMODE_CHALLENGE_WORKERS || aGameMode == GameMode::GAMEMODE_CHALLENGE_MOUNTAIN)
 			mNumWaves = 20;
 		else if (mApp->IsStormyNightLevel() || mApp->IsLittleTroubleLevel() || mApp->IsBungeeBlitzLevel() ||
 				 aGameMode == GameMode::GAMEMODE_CHALLENGE_COLUMN || mApp->IsShovelLevel() || aGameMode == GameMode::GAMEMODE_CHALLENGE_WAR_AND_PEAS_2 ||
-				 aGameMode == GameMode::GAMEMODE_CHALLENGE_WALLNUT_BOWLING_2 || aGameMode == GameMode::GAMEMODE_CHALLENGE_POGO_PARTY || aGameMode == GameMode::GAMEMODE_CHALLENGE_DOCKS || aGameMode == GameMode::GAMEMODE_CHALLENGE_GARG || aGameMode == GameMode::GAMEMODE_CHALLENGE_BOH)
+				 aGameMode == GameMode::GAMEMODE_CHALLENGE_WALLNUT_BOWLING_2 || aGameMode == GameMode::GAMEMODE_CHALLENGE_POGO_PARTY || aGameMode == GameMode::GAMEMODE_CHALLENGE_DOCKS || aGameMode == GameMode::GAMEMODE_CHALLENGE_GARG || aGameMode == GameMode::GAMEMODE_CHALLENGE_BOH
+			|| aGameMode == GameMode::GAMEMODE_CHALLENGE_RIVER)
 			mNumWaves = 30;
 		else if (aGameMode == GameMode::GAMEMODE_CHALLENGE_ALL)
 			mNumWaves = 100;
@@ -654,15 +655,15 @@ void Board::PickZombieWaves()
 		}
 		else if (mApp->IsSurvivalMode() && mChallenge->mSurvivalStage > 0)
 		{
-			aZombiePoints = (mChallenge->mSurvivalStage * GetNumWavesPerSurvivalStage() + aWave) * 4 / 5 + 1;
+			aZombiePoints = (mChallenge->mSurvivalStage * GetNumWavesPerSurvivalStage() + aWave) * 3 / 5 + 1;
 		}
-		else if (mApp->IsAdventureMode() && mApp->HasFinishedAdventure() && mLevel != 5)
+		else if (mApp->IsAdventureMode() && mApp->HasFinishedAdventure() && mLevel != 4)
 		{
-			aZombiePoints = aWave * 4 / 5 + 1;
+			aZombiePoints = aWave * 2 / 3 + 1;
 		}
 		else
 		{
-			aZombiePoints = aWave / 4 + 1;
+			aZombiePoints = aWave / 2 + 1;
 		}
 
 		// 旗帜波的特殊调整
@@ -696,7 +697,7 @@ void Board::PickZombieWaves()
 		}
 		else if (mApp->IsStormyNightLevel() && mApp->IsAdventureMode())
 		{
-			aZombiePoints *= 4;
+			aZombiePoints *= 2.5;
 		}
 		else if (mApp->IsShovelLevel() || mApp->IsBungeeBlitzLevel() || mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_PORTAL_COMBAT || mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_INVISIGHOUL)
 		{
@@ -825,6 +826,14 @@ int Board::GetLevelRandSeed()
 //0x40A160
 void Board::LoadBackgroundImages()
 {
+	if (mApp->mGameMode == GAMEMODE_CHALLENGE_MOUNTAIN)
+	{
+		TodLoadResources("DelayLoad_Background10");
+		TodLoadResources("DelayLoad_Background13");
+		return;
+	}
+
+
 	switch (mBackground)
 	{
 	case BackgroundType::BACKGROUND_1_DAY:
@@ -878,6 +887,10 @@ void Board::LoadBackgroundImages()
 		TodLoadResources("DelayLoad_Background12");
 		break;
 
+	case BackgroundType::BACKGROUND_13:
+		TodLoadResources("DelayLoad_Background13");
+		break;
+
 	case BackgroundType::BACKGROUND_GREENHOUSE:
 		TodLoadResources("DelayLoad_GreenHouseGarden");
 		TodLoadResources("DelayLoad_GreenHouseOverlay");
@@ -916,6 +929,7 @@ void Board::PickBackground()
 		{
 			mBackground = BackgroundType::BACKGROUND_2_NIGHT;
 		}
+
 		else if (mLevel <= 3 * LEVELS_PER_AREA)
 		{
 			mBackground = BackgroundType::BACKGROUND_3_POOL;
@@ -936,6 +950,7 @@ void Board::PickBackground()
 		{
 			mBackground = BackgroundType::BACKGROUND_6_BOSS;
 		}
+
 		else if (mLevel <= 6 * LEVELS_PER_AREA)
 		{
 			mBackground = BackgroundType::BACKGROUND_8;
@@ -965,9 +980,10 @@ void Board::PickBackground()
 	case GameMode::GAMEMODE_CHALLENGE_ICE:
 	case GameMode::GAMEMODE_CHALLENGE_SHOVEL:
 	case GameMode::GAMEMODE_CHALLENGE_SQUIRREL:
-	case GameMode::GAMEMODE_CHALLENGE_GARG:
+	case GameMode::GAMEMODE_CHALLENGE_WAR_AND_PEAS:
 	case GameMode::GAMEMODE_CHALLENGE_DEEZNUTS:
 	case GameMode::GAMEMODE_CHALLENGE_PEAR:
+	case GameMode::GAMEMODE_CHALLENGE_WORKERS:
 		mBackground = BackgroundType::BACKGROUND_1_DAY;
 		break;
 
@@ -1036,6 +1052,7 @@ void Board::PickBackground()
 	case GameMode::GAMEMODE_CHALLENGE_POGO_PARTY:
 	case GameMode::GAMEMODE_CHALLENGE_HIGH_GRAVITY:
 	case GameMode::GAMEMODE_CHALLENGE_BUNGEE_BLITZ:
+	case GameMode::GAMEMODE_CHALLENGE_GARG:
 		mBackground = BackgroundType::BACKGROUND_5_ROOF;
 		break;
 
@@ -1046,7 +1063,7 @@ void Board::PickBackground()
 		mBackground = BackgroundType::BACKGROUND_6_BOSS;
 		break;
 
-	case GameMode::GAMEMODE_CHALLENGE_WAR_AND_PEAS:
+	
 	case GameMode::GAMEMODE_SURVIVAL_NORMAL_STAGE_7:
 	case GameMode::GAMEMODE_SURVIVAL_HARD_STAGE_7:
 	case GameMode::GAMEMODE_SURVIVAL_ENDLESS_STAGE_7:
@@ -1076,6 +1093,10 @@ void Board::PickBackground()
 		mBackground = BackgroundType::BACKGROUND_12;
 		break;
 
+
+		mBackground = BackgroundType::BACKGROUND_13;
+		break;
+
 	case GameMode::GAMEMODE_CHALLENGE_ZOMBIQUARIUM:
 		mBackground = BackgroundType::BACKGROUND_ZOMBIQUARIUM;
 		break;
@@ -1093,7 +1114,7 @@ void Board::PickBackground()
 		break;
 	}
 	LoadBackgroundImages();
-	if (mBackground == BackgroundType::BACKGROUND_1_DAY || mBackground == BackgroundType::BACKGROUND_GREENHOUSE || mBackground == BackgroundType::BACKGROUND_TREEOFWISDOM || mBackground == BackgroundType::BACKGROUND_8)
+	if (mBackground == BackgroundType::BACKGROUND_1_DAY || mBackground == BackgroundType::BACKGROUND_GREENHOUSE || mBackground == BackgroundType::BACKGROUND_TREEOFWISDOM )
 	{
 		mPlantRow[0] = PlantRowType::PLANTROW_NORMAL;
 		mPlantRow[1] = PlantRowType::PLANTROW_NORMAL;
@@ -1150,7 +1171,7 @@ void Board::PickBackground()
 		mPlantRow[4] = PlantRowType::PLANTROW_NORMAL;
 		mPlantRow[5] = PlantRowType::PLANTROW_DIRT;
 	}
-	else if (mBackground == BackgroundType::BACKGROUND_ALLPOOL)
+	else if (mBackground == BackgroundType::BACKGROUND_ALLPOOL || mBackground == BackgroundType::BACKGROUND_8)
 	{
 		mPlantRow[0] = PlantRowType::PLANTROW_POOL;
 		mPlantRow[1] = PlantRowType::PLANTROW_POOL;
@@ -1236,8 +1257,8 @@ void Board::PickBackground()
 	}
 	else if (mBackground == BackgroundType::BACKGROUND_12)
 	{
-		mGridSquareType[0][0] = GridSquareType::GRIDSQUARE_GRASS;
-		mGridSquareType[1][0] = GridSquareType::GRIDSQUARE_GRASS;
+		mGridSquareType[0][0] = GridSquareType::GRIDSQUARE_DIRT;
+		mGridSquareType[1][0] = GridSquareType::GRIDSQUARE_DIRT;
 		mGridSquareType[2][0] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[3][0] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[4][0] = GridSquareType::GRIDSQUARE_GRASS;
@@ -1249,23 +1270,23 @@ void Board::PickBackground()
 		mGridSquareType[1][1] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[2][1] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[3][1] = GridSquareType::GRIDSQUARE_GRASS;
-		mGridSquareType[4][1] = GridSquareType::GRIDSQUARE_GRASS;
+		mGridSquareType[4][1] = GridSquareType::GRIDSQUARE_POOL;
 		mGridSquareType[5][1] = GridSquareType::GRIDSQUARE_POOL;
 		mGridSquareType[6][1] = GridSquareType::GRIDSQUARE_POOL;
 		mGridSquareType[7][1] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[8][1] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[0][2] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[1][2] = GridSquareType::GRIDSQUARE_GRASS;
-		mGridSquareType[2][2] = GridSquareType::GRIDSQUARE_GRASS;
-		mGridSquareType[3][2] = GridSquareType::GRIDSQUARE_GRASS;
-		mGridSquareType[4][2] = GridSquareType::GRIDSQUARE_GRASS;
+		mGridSquareType[2][2] = GridSquareType::GRIDSQUARE_POOL;
+		mGridSquareType[3][2] = GridSquareType::GRIDSQUARE_POOL;
+		mGridSquareType[4][2] = GridSquareType::GRIDSQUARE_POOL;
 		mGridSquareType[5][2] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[6][2] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[7][2] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[8][2] = GridSquareType::GRIDSQUARE_GRASS;
-		mGridSquareType[0][3] = GridSquareType::GRIDSQUARE_GRASS;
-		mGridSquareType[1][3] = GridSquareType::GRIDSQUARE_GRASS;
-		mGridSquareType[2][3] = GridSquareType::GRIDSQUARE_GRASS;
+		mGridSquareType[0][3] = GridSquareType::GRIDSQUARE_POOL;
+		mGridSquareType[1][3] = GridSquareType::GRIDSQUARE_POOL;
+		mGridSquareType[2][3] = GridSquareType::GRIDSQUARE_POOL;
 		mGridSquareType[3][3] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[4][3] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[5][3] = GridSquareType::GRIDSQUARE_GRASS;
@@ -1273,7 +1294,7 @@ void Board::PickBackground()
 		mGridSquareType[7][3] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[8][3] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[0][4] = GridSquareType::GRIDSQUARE_POOL;
-		mGridSquareType[1][4] = GridSquareType::GRIDSQUARE_POOL;
+		mGridSquareType[1][4] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[2][4] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[3][4] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[4][4] = GridSquareType::GRIDSQUARE_GRASS;
@@ -1282,6 +1303,23 @@ void Board::PickBackground()
 		mGridSquareType[7][4] = GridSquareType::GRIDSQUARE_GRASS;
 		mGridSquareType[8][4] = GridSquareType::GRIDSQUARE_GRASS;
 		mPlantRow[5] = PlantRowType::PLANTROW_DIRT;
+		}
+	else if (mBackground == BackgroundType::BACKGROUND_13)
+	{
+		mGridSquareType[0][0] = GridSquareType::GRIDSQUARE_HIGH_GROUND;
+		mGridSquareType[1][0] = GridSquareType::GRIDSQUARE_HIGH_GROUND;
+		mGridSquareType[2][0] = GridSquareType::GRIDSQUARE_HIGH_GROUND;
+		mGridSquareType[3][0] = GridSquareType::GRIDSQUARE_HIGH_GROUND;
+		mGridSquareType[0][1] = GridSquareType::GRIDSQUARE_HIGH_GROUND;
+		mGridSquareType[1][1] = GridSquareType::GRIDSQUARE_HIGH_GROUND;
+		mGridSquareType[2][1] = GridSquareType::GRIDSQUARE_HIGH_GROUND;
+		mGridSquareType[3][1] = GridSquareType::GRIDSQUARE_HIGH_GROUND;
+		mPlantRow[0] = PlantRowType::PLANTROW_NORMAL;
+		mPlantRow[1] = PlantRowType::PLANTROW_NORMAL;
+		mPlantRow[2] = PlantRowType::PLANTROW_POOL;
+		mPlantRow[3] = PlantRowType::PLANTROW_POOL;
+		mPlantRow[4] = PlantRowType::PLANTROW_NORMAL;
+		mPlantRow[5] = PlantRowType::PLANTROW_NORMAL;
 		}
 	else
 	{
@@ -1310,7 +1348,7 @@ void Board::PickBackground()
 	MTRand aLevelRNG(GetLevelRandSeed());
 	if (StageHasGraveStones())
 	{
-		if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_GRAVE_DANGER)
+		if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_GRAVE_DANGER )
 		{
 			AddGraveStones(6, RandRangeInt(1, 2), aLevelRNG);
 			AddGraveStones(7, RandRangeInt(1, 3), aLevelRNG);
@@ -1618,11 +1656,23 @@ void Board::InitLevel()
 	}
 	else if (aGameMode == GameMode::GAMEMODE_CHALLENGE_DEEZNUTS)
 	{
-		mSunMoney = 350;
+		mSunMoney = 500;
+	}
+	else if (mLevel <= 2 * LEVELS_PER_AREA)
+	{
+		mSunMoney = 150;
+	}
+	else if (mLevel <= 4 * LEVELS_PER_AREA)
+	{
+		mSunMoney = 150;
+	}
+	else if (mLevel >= 46 && mLevel <= 50)
+	{
+		mSunMoney = 150;
 	}
 	else
 	{
-		mSunMoney = 50;
+		mSunMoney = 75;
 	}
 
 
@@ -2708,7 +2758,7 @@ ZombieType Board::PickZombieType(int theZombiePoints, int theWaveIndex, ZombiePi
 			}
 		}
 		// 僵尸最早出现的波数的限制（出怪限制）
-		else if (aGameMode != GameMode::GAMEMODE_CHALLENGE_POGO_PARTY && aGameMode != GameMode::GAMEMODE_CHALLENGE_BOBSLED_BONANZA && aGameMode != GameMode::GAMEMODE_CHALLENGE_AIR_RAID && aGameMode != GameMode::GAMEMODE_CHALLENGE_GARG && aGameMode != GameMode::GAMEMODE_CHALLENGE_ATHLETES && aGameMode != GameMode::GAMEMODE_CHALLENGE_PEAR)
+		else if (aGameMode != GameMode::GAMEMODE_CHALLENGE_POGO_PARTY && aGameMode != GameMode::GAMEMODE_CHALLENGE_BOBSLED_BONANZA && aGameMode != GameMode::GAMEMODE_CHALLENGE_AIR_RAID && aGameMode != GameMode::GAMEMODE_CHALLENGE_GARG && aGameMode != GameMode::GAMEMODE_CHALLENGE_ATHLETES && aGameMode != GameMode::GAMEMODE_CHALLENGE_PEAR && aGameMode != GameMode::GAMEMODE_CHALLENGE_WORKERS)
 		{
 			int aFirstAllowedWave = aZombieDef.mFirstAllowedWave;
 			// 无尽模式中，僵尸最早可出现的波数逐渐前移
@@ -2811,11 +2861,12 @@ bool Board::RowCanHaveZombieType(int theRow, ZombieType theZombieType)
 	// 非水路不能刷出水路僵尸；前 5 小波，水面仅刷出潜水僵尸或海豚骑士僵尸
 	if (mPlantRow[theRow] == PlantRowType::PLANTROW_POOL)
 	{
-		if (aCurrentWave < 5 && !IsZombieTypePoolOnly(theZombieType) && mBackground != BackgroundType::BACKGROUND_ALLPOOL)
+		if (aCurrentWave < 5 && !IsZombieTypePoolOnly(theZombieType) && mBackground != BackgroundType::BACKGROUND_ALLPOOL && mBackground != BackgroundType::BACKGROUND_8)
 		{
 			return false;
 		}
 	}
+
 	else if (IsZombieTypePoolOnly(theZombieType))
 	{
 		return false;
@@ -2826,13 +2877,7 @@ bool Board::RowCanHaveZombieType(int theRow, ZombieType theZombieType)
 		return false;
 	}
 	// “自古一路无巨人”（生存模式除外）
-	if (theRow == 0 && !mApp->IsSurvivalMode())
-	{
-		if (theZombieType == ZombieType::ZOMBIE_GARGANTUAR || theZombieType == ZombieType::ZOMBIE_REDEYE_GARGANTUAR || theZombieType == ZombieType::ZOMBIE_FOOTBALL_GARG)
-		{
-			return false;
-		}
-	}
+	
 	// 非舞王僵尸或当前为泳池关卡，则可以刷出该僵尸
 	if (theZombieType != ZombieType::ZOMBIE_DANCER || StageHasPool())
 	{
@@ -4194,7 +4239,7 @@ void Board::MouseDownWithPlant(int x, int y, int theClickCount)
 			aNormalPlant->Die();
 		}
 	}
-	if (aPlantingSeedType == SeedType::SEED_PUMPKINSHELL && aPumpkinPlant || SeedType::SEED_EXPLODE_O_VINE && aPumpkinPlant)
+	if (aPlantingSeedType == SeedType::SEED_PUMPKINSHELL && aPumpkinPlant || aPlantingSeedType == SeedType::SEED_EXPLODE_O_VINE && aPumpkinPlant)
 	{
 		if (aPumpkinPlant->mSeedType == SeedType::SEED_PUMPKINSHELL || aPumpkinPlant->mSeedType == SeedType::SEED_EXPLODE_O_VINE)
 		{
@@ -5616,16 +5661,6 @@ void Board::UpdateSunSpawning()
 		}
 	}
 
-
-	mSunCountDown--;
-	if (mSunCountDown != 0)
-		return;
-
-	mNumSunsFallen++;
-	mSunCountDown = min(SUN_COUNTDOWN_MAX, SUN_COUNTDOWN + mNumSunsFallen * 10) + Rand(SUN_COUNTDOWN_RANGE);
-	CoinType aSunType = mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_SUNNY_DAY ? CoinType::COIN_LARGESUN : CoinType::COIN_SUN;
-	AddCoin(RandRangeInt(100, 649), 60, aSunType, CoinMotion::COIN_MOTION_FROM_SKY);
- 
 	if (mApp->mGameMode == GameMode::GAMEMODE_ADVENTURE)
 	{
 
@@ -5641,6 +5676,17 @@ void Board::UpdateSunSpawning()
 		AddCoin(RandRangeInt(100, 649), 60, aSunType, CoinMotion::COIN_MOTION_FROM_SKY);
 
 	}
+
+	mSunCountDown--;
+	if (mSunCountDown != 0)
+		return;
+
+	mNumSunsFallen++;
+	mSunCountDown = min(SUN_COUNTDOWN_MAX, SUN_COUNTDOWN + mNumSunsFallen * 10) + Rand(SUN_COUNTDOWN_RANGE);
+	CoinType aSunType = mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_SUNNY_DAY ? CoinType::COIN_LARGESUN : CoinType::COIN_SUN;
+	AddCoin(RandRangeInt(100, 649), 60, aSunType, CoinMotion::COIN_MOTION_FROM_SKY);
+ 
+	
 }
 
 
@@ -6314,6 +6360,7 @@ void Board::DrawBackdrop(Graphics* g)
 	case BackgroundType::BACKGROUND_10:		            aBgImage = Sexy::IMAGE_BACKGROUND10;                    break;
 	case BackgroundType::BACKGROUND_11:		            aBgImage = Sexy::IMAGE_BACKGROUND11;                    break;
 	case BackgroundType::BACKGROUND_12:		            aBgImage = Sexy::IMAGE_BACKGROUND12;                    break;
+	case BackgroundType::BACKGROUND_13:		            aBgImage = Sexy::IMAGE_BACKGROUND13;                    break;
 	case BackgroundType::BACKGROUND_MUSHROOM_GARDEN:	aBgImage = Sexy::IMAGE_BACKGROUND_MUSHROOMGARDEN;		break;
 	case BackgroundType::BACKGROUND_GREENHOUSE:			aBgImage = Sexy::IMAGE_BACKGROUND_GREENHOUSE;			break;
 	case BackgroundType::BACKGROUND_ZOMBIQUARIUM:		aBgImage = Sexy::IMAGE_AQUARIUM1;						break;
@@ -6352,10 +6399,28 @@ void Board::DrawBackdrop(Graphics* g)
 		}
 		else
 		{
-			g->DrawImage(aBgImage, -BOARD_OFFSET, 0);
+			if (mApp->mGameMode == GAMEMODE_CHALLENGE_MOUNTAIN)
+			{
+
+				if (mApp->mGameScene == SCENE_PLAYING && mChallenge->mChallengeStateCounter <= 500 && mChallenge->mChallengeStateCounter >= 0)
+				{
+					g->SetColorizeImages(true);
+					g->SetColor(Color(255, 255, 255, 255 * (500 - mChallenge->mChallengeStateCounter) / 500));
+					if (StageIsNight())
+						aBgImage = Sexy::IMAGE_BACKGROUND10;
+					else
+						aBgImage = Sexy::IMAGE_BACKGROUND13;
+
+
+					g->SetColorizeImages(false);
+				}
+			}
+			else
+			{
+				g->DrawImage(aBgImage, -BOARD_OFFSET, 0);
+			}
 		}
 	}
-
 	if (mApp->mGameScene == GameScenes::SCENE_ZOMBIES_WON)
 	{
 		DrawHouseDoorBottom(g);
@@ -6378,6 +6443,7 @@ void Board::DrawBackdrop(Graphics* g)
 		g->DrawImage(Sexy::IMAGE_NIGHT_GRAVE_GRAPHIC, 1092, 40);
 	}
 }
+
 
 //0x416690
 bool RenderItemSortFunc(const RenderItem& theItem1, const RenderItem& theItem2)
@@ -9120,7 +9186,8 @@ bool Board::HasConveyorBeltSeedBank()
 		mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_PORTAL_COMBAT ||
 		mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_COLUMN ||
 		mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_INVISIGHOUL ||
-		mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_ATHLETES;
+		mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_ATHLETES ||
+		mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_WORKERS;
 
 }
 
@@ -9199,6 +9266,7 @@ bool Board::StageIsNight()
 		mBackground == BackgroundType::BACKGROUND_6_BOSS ||
 		mBackground == BackgroundType::BACKGROUND_MUSHROOM_GARDEN || 
 		mBackground == BackgroundType::BACKGROUND_11 ||
+		mBackground == BackgroundType::BACKGROUND_13 ||
 		mBackground == BackgroundType::BACKGROUND_ZOMBIQUARIUM;
 }
 
@@ -9229,12 +9297,12 @@ bool Board::StageHasRoof()
 //0x41C0D0
 bool Board::StageHasPool()
 {
-	return (mBackground == BackgroundType::BACKGROUND_3_POOL || mBackground == BackgroundType::BACKGROUND_4_FOG || mBackground == BackgroundType::BACKGROUND_10);
+	return (mBackground == BackgroundType::BACKGROUND_3_POOL || mBackground == BackgroundType::BACKGROUND_4_FOG || mBackground == BackgroundType::BACKGROUND_10 || mBackground == BackgroundType::BACKGROUND_13);
 }
 
 bool Board::StageHas6Rows()
 {
-	return (mBackground == BackgroundType::BACKGROUND_3_POOL || mBackground == BackgroundType::BACKGROUND_4_FOG || mBackground == BackgroundType::BACKGROUND_10);
+	return (mBackground == BackgroundType::BACKGROUND_3_POOL || mBackground == BackgroundType::BACKGROUND_4_FOG || mBackground == BackgroundType::BACKGROUND_10 || mBackground == BackgroundType::BACKGROUND_13);
 }
 
 //0x41C0F0
@@ -9265,7 +9333,8 @@ int Board::LeftFogColumn()
 	if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_AIR_RAID)		return 6;
 	if (!mApp->IsAdventureMode())										return 5;
 	if (mLevel == 31)													return 6;
-	if (mLevel >= 32 && mLevel <= 36)									return 5;
+	if (mLevel >= 32 && mLevel <= 34)									return 5;
+	if (mLevel == 36)													return 0;
 	if (mLevel >= 37 && mLevel <= 40)									return 4;
 	TOD_ASSERT();
 }
