@@ -350,6 +350,7 @@ void Plant::PlantInitialize(int theGridX, int theGridY, SeedType theSeedType, Se
         break;
     }
     case SeedType::SEED_POTATOMINE:
+    case SeedType::SEED_POISONPOTATO:
     {
         TOD_ASSERT(aBodyReanim);
 
@@ -639,7 +640,7 @@ int Plant::GetDamageRangeFlags(PlantWeapon thePlantWeapon)
     case SeedType::SEED_WINTERMELON:
         return 13;
     case SeedType::SEED_POTATOMINE:
-    case   SeedType::SEED_POISONPOTATO:
+    case SeedType::SEED_POISONPOTATO:
         return 77;
     case SeedType::SEED_SQUASH:
         return 13;
@@ -2425,7 +2426,7 @@ void Plant::Squish()
             DoSpecial();
             return;
         }
-        else if (mSeedType == SeedType::SEED_POTATOMINE && mState != PlantState::STATE_NOTREADY)
+        else if (mSeedType == SeedType::SEED_POTATOMINE || mSeedType == SeedType::SEED_POISONPOTATO && mState != PlantState::STATE_NOTREADY)
         {
             DoSpecial();
             return;
@@ -2504,7 +2505,7 @@ void Plant::UpdateBowling()
             mApp->PlaySample(SOUND_BOWLINGIMPACT2);
 
             int aDamageRangeFlags = GetDamageRangeFlags(PlantWeapon::WEAPON_PRIMARY) | 32U;
-            mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 90, 1, true, aDamageRangeFlags);
+            mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 90, 1, true, false, aDamageRangeFlags);
             mApp->AddTodParticle(aPosX, aPosY, (int)RenderLayer::RENDER_LAYER_TOP, ParticleEffect::PARTICLE_POWIE);
             mBoard->ShakeBoard(3, -4);
 
@@ -2670,7 +2671,7 @@ void Plant::UpdateAbilities()
     else if (MakesSun() || mSeedType == SeedType::SEED_MARIGOLD)                                UpdateProductionPlant();
     else if (mSeedType == SeedType::SEED_GRAVEBUSTER)                                           UpdateGraveBuster();
     else if (mSeedType == SeedType::SEED_TORCHWOOD)                                             UpdateTorchwood();
-    else if (mSeedType == SeedType::SEED_POTATOMINE)                                            UpdatePotato();
+    else if (mSeedType == SeedType::SEED_POTATOMINE || mSeedType == SeedType::SEED_POISONPOTATO) UpdatePotato();
     else if (mSeedType == SeedType::SEED_SPIKEWEED || mSeedType == SeedType::SEED_SPIKEROCK)    UpdateSpikeweed();
     else if (mSeedType == SeedType::SEED_TANGLEKELP)                                            UpdateTanglekelp();
     else if (mSeedType == SeedType::SEED_SCAREDYSHROOM)                                         UpdateScaredyShroom();
@@ -2874,7 +2875,7 @@ void Plant::UpdateReanim()
         aOffsetX += 12.0f;
         aOffsetY += 10.0f;
     }
-    if (mSeedType == SeedType::SEED_POTATOMINE)
+    if (mSeedType == SeedType::SEED_POTATOMINE || mSeedType == SeedType::SEED_POISONPOTATO)
     {
         aScaleX = 0.8f;
         aScaleY = 0.8f;
@@ -3157,7 +3158,7 @@ void Plant::DoBlink()
     if (NotOnGround() || mShootingCounter != 0)
         return;
 
-    if (mSeedType == SeedType::SEED_POTATOMINE && mState != PlantState::STATE_POTATO_ARMED)
+    if (mSeedType == SeedType::SEED_POTATOMINE || mSeedType == SeedType::SEED_POISONPOTATO && mState != PlantState::STATE_POTATO_ARMED)
         return;
 
     if (mState == PlantState::STATE_CACTUS_RISING || mState == PlantState::STATE_CACTUS_HIGH || mState == PlantState::STATE_CACTUS_LOWERING ||
@@ -4306,7 +4307,7 @@ void Plant::DrawSeedType(Graphics* g, SeedType theSeedType, SeedType theImitater
         aSeedType = theImitaterType;
         aDrawVariation = DrawVariation::VARIATION_IMITATER;
         if (theImitaterType == SeedType::SEED_HYPNOSHROOM || theImitaterType == SeedType::SEED_SQUASH || theImitaterType == SeedType::SEED_POTATOMINE ||
-            theImitaterType == SeedType::SEED_GARLIC || theImitaterType == SeedType::SEED_LILYPAD)
+            theImitaterType == SeedType::SEED_GARLIC || theImitaterType == SeedType::SEED_LILYPAD || theImitaterType == SeedType::SEED_POISONPOTATO)
             aDrawVariation = DrawVariation::VARIATION_IMITATER_LESS;
     }
     else if (theDrawVariation == DrawVariation::VARIATION_NORMAL && theSeedType == SeedType::SEED_TANGLEKELP)
@@ -4528,7 +4529,7 @@ void Plant::DoSpecial()
         mApp->PlayFoley(FoleyType::FOLEY_CHERRYBOMB);
         mApp->PlayFoley(FoleyType::FOLEY_JUICY);
 
-        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 115, 1, true, aDamageRangeFlags);
+        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 115, 1, true, false, aDamageRangeFlags);
 
         mApp->AddTodParticle(aPosX, aPosY, (int)RenderLayer::RENDER_LAYER_TOP, ParticleEffect::PARTICLE_POWIE);
         mBoard->ShakeBoard(3, -4);
@@ -4541,7 +4542,7 @@ void Plant::DoSpecial()
         mApp->PlayFoley(FoleyType::FOLEY_CHERRYBOMB);
         mApp->PlayFoley(FoleyType::FOLEY_JUICY);
 
-        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 60, 0, false, aDamageRangeFlags);
+        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 60, 0, false, false, aDamageRangeFlags);
 
         mApp->AddTodParticle(aPosX, aPosY, (int)RenderLayer::RENDER_LAYER_TOP, ParticleEffect::PARTICLE_POWIE);
         mBoard->ShakeBoard(3, -4);
@@ -4554,7 +4555,7 @@ void Plant::DoSpecial()
         mApp->PlayFoley(FoleyType::FOLEY_CHERRYBOMB);
         mApp->PlayFoley(FoleyType::FOLEY_JUICY);
 
-        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 60, 0, false, aDamageRangeFlags);
+        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 60, 0, false, false, aDamageRangeFlags);
 
         mApp->AddTodParticle(aPosX, aPosY, (int)RenderLayer::RENDER_LAYER_TOP, ParticleEffect::PARTICLE_POWIE);
         mBoard->ShakeBoard(3, -4);
@@ -4567,7 +4568,7 @@ void Plant::DoSpecial()
         mApp->PlayFoley(FoleyType::FOLEY_CHERRYBOMB);
         mApp->PlayFoley(FoleyType::FOLEY_JUICY);
 
-        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 60, 0, true, aDamageRangeFlags);
+        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 60, 0, true, false, aDamageRangeFlags);
 
         mApp->AddTodParticle(aPosX, aPosY, (int)RenderLayer::RENDER_LAYER_TOP, ParticleEffect::PARTICLE_POWIE);
         mBoard->ShakeBoard(3, -4);
@@ -4579,7 +4580,7 @@ void Plant::DoSpecial()
     {
         mApp->PlaySample(SOUND_DOOMSHROOM);
 
-        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 250, 3, true, aDamageRangeFlags);
+        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 250, 3, true, false, aDamageRangeFlags);
         KillAllPlantsNearDoom();
 
         mApp->AddTodParticle(aPosX, aPosY, (int)RenderLayer::RENDER_LAYER_TOP, ParticleEffect::PARTICLE_DOOM);
@@ -4653,7 +4654,22 @@ void Plant::DoSpecial()
         aPosY = mY + mHeight / 2;
 
         mApp->PlaySample(SOUND_POTATO_MINE);
-        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 60, 0, false, aDamageRangeFlags);
+        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 60, 0, false, false, aDamageRangeFlags);
+
+        int aRenderPosition = Board::MakeRenderOrder(RenderLayer::RENDER_LAYER_PARTICLE, mRow, 0);
+        mApp->AddTodParticle(aPosX + 20.0f, aPosY, aRenderPosition, ParticleEffect::PARTICLE_POTATO_MINE);
+        mBoard->ShakeBoard(3, -4);
+
+        Die();
+        break;
+    }
+    case SeedType::SEED_POISONPOTATO:
+    {
+        aPosX = mX + mWidth / 2 - 20;
+        aPosY = mY + mHeight / 2;
+
+        mApp->PlaySample(SOUND_POTATO_MINE);
+        mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, 115, 1, false, true, aDamageRangeFlags);
 
         int aRenderPosition = Board::MakeRenderOrder(RenderLayer::RENDER_LAYER_PARTICLE, mRow, 0);
         mApp->AddTodParticle(aPosX + 20.0f, aPosY, aRenderPosition, ParticleEffect::PARTICLE_POTATO_MINE);
@@ -5131,7 +5147,7 @@ Zombie* Plant::FindTargetZombie(int theRow, PlantWeapon thePlantWeapon)
 
         if (!aZombie->mHasHead || aZombie->IsTangleKelpTarget())
         {
-            if (mSeedType == SeedType::SEED_POTATOMINE || mSeedType == SeedType::SEED_CHOMPER || mSeedType == SeedType::SEED_TANGLEKELP)
+            if (mSeedType == SeedType::SEED_POTATOMINE || mSeedType == SeedType::SEED_CHOMPER || mSeedType == SeedType::SEED_TANGLEKELP || mSeedType == SeedType::SEED_POISONPOTATO)
             {
                 continue;
             }
@@ -5191,7 +5207,7 @@ Zombie* Plant::FindTargetZombie(int theRow, PlantWeapon thePlantWeapon)
                 }
             }
 
-            if (mSeedType == SeedType::SEED_POTATOMINE)
+            if (mSeedType == SeedType::SEED_POTATOMINE || mSeedType == SeedType::SEED_POISONPOTATO)
             {
                 if ((aZombie->mZombieType == ZombieType::ZOMBIE_POGO && aZombie->mHasObject) ||
                     aZombie->mZombiePhase == ZombiePhase::PHASE_POLEVAULTER_IN_VAULT || aZombie->mZombiePhase == ZombiePhase::PHASE_POLEVAULTER_PRE_VAULT)

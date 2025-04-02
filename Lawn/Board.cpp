@@ -10121,9 +10121,10 @@ bool Board::PlantingRequirementsMet(SeedType theSeedType)
 }
 
 //0x41D8A0
-void Board::KillAllZombiesInRadius(int theRow, int theX, int theY, int theRadius, int theRowRange, bool theBurn, int theDamageRangeFlags)
+void Board::KillAllZombiesInRadius(int theRow, int theX, int theY, int theRadius, int theRowRange, bool theBurn, bool isPoisonous, int theDamageRangeFlags)
 {
 	Zombie* aZombie = nullptr;
+	Plant* aPlant = nullptr;
 	while (IterateZombies(aZombie))
 	{
 		if (aZombie->EffectedByDamage(theDamageRangeFlags))
@@ -10140,6 +10141,10 @@ void Board::KillAllZombiesInRadius(int theRow, int theX, int theY, int theRadius
 				if (theBurn)
 				{
 					aZombie->ApplyBurn();
+				}
+				else if (isPoisonous)
+				{
+					aZombie->ApplyPoison();
 				}
 				else
 				{

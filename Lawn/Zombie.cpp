@@ -2319,11 +2319,11 @@ void Zombie::UpdateZombieJackInTheBox()
             int aPosY = mY + mHeight / 2;
             if (mMindControlled)
             {
-                mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, JackInTheBoxZombieRadius, 1, true, 127);
+                mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, JackInTheBoxZombieRadius, 1, true, false, 127);
             }
             else
             {
-                mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, JackInTheBoxZombieRadius, 1, true, 255);
+                mBoard->KillAllZombiesInRadius(mRow, aPosX, aPosY, JackInTheBoxZombieRadius, 1, true, false, 255);
                 mBoard->KillAllPlantsInRadius(aPosX, aPosY, JackInTheBoxPlantRadius);
             }
 
@@ -7458,7 +7458,7 @@ void Zombie::EatPlant(Plant* thePlant)
             return;
         }
     }
-    if (thePlant->mSeedType == SeedType::SEED_POTATOMINE && thePlant->mState != PlantState::STATE_NOTREADY)
+    if (thePlant->mSeedType == SeedType::SEED_POTATOMINE && thePlant->mSeedType == SeedType::SEED_POISONPOTATO && thePlant->mState != PlantState::STATE_NOTREADY)
     {
         return;
     }
