@@ -55,6 +55,7 @@ ZombieDefinition gZombieDefs[NUM_ZOMBIE_TYPES] = {  //0x69DA80
     { ZOMBIE_GIGA_FOOTBALL,     REANIM_ZOMBIE_GIGA_FOOTBALL, 9,     47,     5,      2500,   _S("GIGA_FOOTBALL_ZOMBIE") ,1 },
     { ZOMBIE_FIREFIGHTER,       REANIM_FIREFIGHTER,      2,      54,      5,      3000,   _S("THEONETHATWASONTHEORIGINALHARDRAIN_ZOMBIE") ,1 },
     { ZOMBIE_UMBRELLA,          REANIM_DIGGER,      2,      56,      1,      4000,   _S("UMBRELLA_ZOMBIE") ,1 },
+    { ZOMBIE_BULLDOG,               REANIM_IMP,                 10,     1,      1,      7000,      _S("ZOMBIE_BULLDOG") ,0 },
     { ZOMBIE_MOUSTACHE,         REANIM_ZOMBIE,               2,      99,      1,      6000,   _S("MOUSTACHE_ZOMBIE") ,0 },
     { ZOMBIE_FOOTBALL_GARG,     REANIM_GARGANTUAR,          10,     48,     15,     3000,   _S("FOOTBALL_GARGANTUAR") ,0 },
     { ZOMBIE_BIGIMP,            REANIM_IMP,                 10,     1,      1,      7000,      _S("BIG_IMP") ,0 },
@@ -804,7 +805,17 @@ void Zombie::ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Z
         }
         break;
     }
-
+    case ZombieType::ZOMBIE_BULLDOG:  //0x523576
+        mAltitude = -90.0f;
+        mPosX -= 15.0f;
+        if (!IsOnBoard())
+        {
+            PlayZombieReanim("anim_walk", ReanimLoopType::REANIM_LOOP, 0, 12.0f);
+        }
+        if (mApp->IsIZombieLevel())
+        {
+            mBodyHealth = 200;
+        }
 
 
     case ZombieType::ZOMBIE_BOSS:  //0x5235BE

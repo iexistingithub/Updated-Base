@@ -8953,6 +8953,11 @@ void Board::KeyChar(SexyChar theChar)
 		AddZombie(ZombieType::ZOMBIE_GIGA_FOOTBALL, Zombie::ZOMBIE_WAVE_DEBUG);
 		return;
 	}
+	if (theChar == _S('-'))
+	{
+		AddZombie(ZombieType::ZOMBIE_BULLDOG, Zombie::ZOMBIE_WAVE_DEBUG);
+		return;
+	}
 	if (theChar == _S('1'))
 	{
 		Plant* aPlant = GetTopPlantAt(0, 0, PlantPriority::TOPPLANT_ANY);
